@@ -1,72 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
-    <!-- external (gtag) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DJDL65P9Y4"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-DJDL65P9Y4');
-    </script>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROM Library | CC Ported</title>
-    <link rel="stylesheet" href="style.css" />
-
-    <meta name="description"
-        content="Many games ported to different domains to prevent organization unblocking tools from blocking them. Cookie clicker, drift hunters, tiny fishing, spelunky, minecraft, slope, champion island, and NES games all unblocked.">
-
+    <title>CCPorted ROMs Library</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1502.0/aws-sdk.min.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <h1>Rom Library</h1>
-    <p><a href="https://ccported.github.io">&larr; Back to CCPorted</a></p>
-    <input type="text" id="searchInput" placeholder="Search for ROMs...">
     <div class="container">
+        <h1>CCPorted ROMs Library</h1>
+        <div id="content">
+            <div class="loading">Loading ROMs...</div>
+        </div>
     </div>
+
     <script>
-        fetch('roms.json')
-            .then(response => response.json())
-            .then(data => {
-                const romContainer = document.querySelector('div.container');
-                Object.keys(data).forEach(category => {
-                    const categoryTitle = document.createElement('h2');
-                    categoryTitle.textContent = category.toUpperCase() + ' ROMs';
-                    romContainer.appendChild(categoryTitle);
-                    categoryTitle.classList.add('categoryTitle');
-                    categoryTitle.id = category;
-                    
-                    const romList = document.createElement('ul');
-                    romList.classList.add('romList');
+        // AWS Configuration
+        AWS.config.region = 'us-west-2';
+        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: 'us-west-2:cb7ff0d0-87c6-43c8-a9e4-dece8bd1b8c7'
+        });
 
-                    data[category].forEach(rom => {
-                        const downlodLink = `roms/${category}/${rom[0]}`;
-                        const name = rom[1];
-                        const playlink = `/emulator/?core=${category}&rom=${rom[0]}`;
-                        const romItem = document.createElement('li');
-                        romItem.innerHTML = `<div class="name">${name}</div> <div class="links"><a href="${downlodLink}">Download</a><a href="${playlink}" target="_blank">Play</a></div>`;
-                        romList.appendChild(romItem);
-        
-                    });
+        // Utility function to capitalize words
+        const capitalizeWords = (str) => {
+            return str.split('_').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        };
 
-                    romContainer.appendChild(romList);
-                });
-            })
-            .catch(error => console.error('Error fetching ROMs:', error));
+        // Function to list ROMs
+        async function listRoms() {
+            try {
+                const s3 = new AWS.S3();
+                const bucketName = 'ccportedroms';
+                const roms = {};
+
+                // List all directories (consoles)
+                const { CommonPrefixes } = await s3.listObjects({
+                    Bucket: bucketName,
+                    Delimiter: '/'
+                }).promise();
+
+                // Get ROMs for each console
+                for (const prefix of CommonPrefixes) {
+                    const consoleType = prefix.Prefix.replace('/', '');
+                    const response = await s3.listObjects({
+                        Bucket: bucketName,
+                        Prefix: prefix.Prefix
+                    }).promise();
+
+                    roms[consoleType] = response.Contents
+                        .filter(item => item.Key !== prefix.Prefix)
+                        .map(item => {
+                            const fileName = item.Key.split('/').pop();
+                            return [
+                                fileName,
+                                capitalizeWords(fileName.split('.')[0])
+                            ];
+                        });
+                }
+
+                displayRoms(roms);
+            } catch (error) {
+                console.error('Error loading ROMs:', error);
+                document.getElementById('content').innerHTML = `
+                    <div class="error">
+                        Error loading ROMs. Please try again later.
+                        <br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Function to display ROMs
+        function displayRoms(roms) {
+            const content = document.getElementById('content');
+            content.innerHTML = Object.entries(roms)
+                .map(([console, romList]) => `
+                    <div class="console-section">
+                        <h2 class="console-title">${console.toUpperCase()}</h2>
+                        <ul class="rom-list">
+                            ${romList.map(([filename, title]) => `
+                                <li class="rom-item">
+                                    ${title}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('');
+        }
+
+        // Initialize AWS credentials and load ROMs
+        AWS.config.credentials.get(function(err) {
+            if (err) {
+                console.error('Error getting AWS credentials:', err);
+                document.getElementById('content').innerHTML = `
+                    <div class="error">
+                        Error initializing AWS credentials.
+                        <br>
+                        ${err.message}
+                    </div>
+                `;
+                return;
+            }
+            listRoms();
+        });
     </script>
-    <script src="script.js">
-
-    </script>
-
 </body>
-
 </html>

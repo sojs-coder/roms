@@ -29,7 +29,6 @@ h1, h2 {
     padding: 10px;
     border: 1px solid #ccc;
     font-size: 16px;
-    float: center;
 }
 #searchInput:focus{
     outline: none;
@@ -43,8 +42,23 @@ ul {
 
 li {
     margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    border-bottom: 1px solid #ccc;
 }
-
+li div.name{
+    max-width: 50%;
+    word-wrap: break-word;
+}
+li div.links{
+    padding: 5px;
+}
+li div.links a{
+    text-decoration: underline;
+    color: dodgerblue;
+    margin: 0 5px;
+}
 a{
     text-decoration: none;
     color: dodgerblue;
@@ -62,4 +76,7 @@ a:visited{
 
 .determiner > ul {
     margin-left: 30px;
+}
+div.container {
+    width: 500px;
 }

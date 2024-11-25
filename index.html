@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- external (gtag) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DJDL65P9Y4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-DJDL65P9Y4');
+    </script>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROM Library | CC Ported</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <meta name="description"
+        content="Many games ported to different domains to prevent organization unblocking tools from blocking them. Cookie clicker, drift hunters, tiny fishing, spelunky, minecraft, slope, champion island, and NES games all unblocked.">
+
+</head>
+
+<body>
+    <h1>Rom Library</h1>
+    <p><a href="https://ccported.github.io">&larr; Back to CCPorted</a></p>
+    <input type="text" id="searchInput" placeholder="Search for ROMs...">
+    <div>
+        <h2>GBA Roms</h2>
+        <ul class="romList">
+            <li class="determiner" data-determiner="pokemon">Pokemon
+                <ul>
+                    <li><a href="roms/gba/pokemon_emerald_version.gba">Emerald Version</a></li>
+                    <li><a href="roms/gba/pokemon_fire_red_version.gba">Fire Red Version</a></li>
+                    <li><a href="roms/gba/pokemon_leaf_green_version.gba">Leaf Green Version</a></li>
+                    <li><a href="roms/gba/pokemon_ruby_version.gba">Ruby Version</a></li>
+                    <li><a href="roms/gba/pokemon_sapphire_version.gba">Sapphire Version</a></li>
+                    <li><a href="roms/gba/pokemon_ultra_violet.gba">Ultra Violet</a></li>
+                    <li><a href="roms/gba/pokemon_black_special_palace_edition_1.gba">Black - Special Palace Edition 1
+                            (Red
+                            Hack)</a></li>
+                </ul>
+            </li>
+            <li class="determiner" data-determiner="dragonball">Dragonball
+                <ul>
+                    <li><a href="roms/gba/dragonball_advanced_adventure.gba">Advanced Adventure</a></li>
+                    <li><a href="roms/gba/dragonball_z_supersonic_warriors.gba">Supersonic Warriors</a></li>
+                </ul>
+            </li>
+            <li class="determiner" data-determiner="mario">Mario
+                <ul>
+                    <li><a href="roms/gba/mario_kart_super_circuit.gba">Mario Kart Super Circuit</a></li>
+                    <li><a href="roms/gba/super_mario_bros.gba">Super Mario Bros</a></li>
+                    <li><a href="roms/gba/super_mario_world.gba">Super Mario World</a></li>
+                </ul>
+            </li>
+            <li><a href="roms/gba/grand_theft_auto_advance.gba">Grand Theft Auto Advance</a></li>
+            <li><a href="roms/gba/the_legend_of_zelda.gba">The Legend of Zelda</a></li>
+            <li><a href="roms/gba/naruto_ninja_council_2.gba">Naruto - Ninja Council 2</a></li>
+            <li><a href="roms/gba/need_for_speed_underground_2.gba">Need for Speed - Underground 2</a></li>
+            <li><a href="roms/gba/ultimate_spider_man.gba">Ultimate Spider-Man</a></li>
+
+
+        </ul>
+        <h2>NES Roms</h2>
+        <ul class="romList">
+            <li class="determiner" data-determiner="zelda">Zelda
+                <ul>
+                    <li><a href="roms/nes/legend_of_zelda.nes.zip">Legend Of Zelda</a></li>
+                    <li><a href="roms/nes/zelda_2.nes.zip">Adventures of Link</a></li>
+                </ul>
+            </li>
+            <li class="determiner" data-determiner="mario">Mario
+                <ul>
+                    <li><a href="roms/nes/super_mario_bros_3.nes.zip">Super Mario Bros 3</a></li>
+                    <li><a href="roms/nes/super_mario_bros.nes.zip">Super Mario Bros</a></li>
+                </ul>
+            </li>
+            <li><a href="roms/nes/terminator_2_judgement_day.nes.zip">Terminator 2, Judgement Day</a></li>
+            <li><a href="roms/nes/tetris_2.nes.zip">Tetris 2</a></li>
+            <li><a href="roms/nes/mike_tyson_punch_out.nes.zip">Mike Tyson's Punch Out</a></li>
+            <li><a href="roms/nes/rc_pro_am_2.nes.zip">RC Pro AM 2</a></li>
+            <li><a href="roms/nes/galaga.nes">Galaga</a></li>
+        </ul>
+    </div>
+    <script>
+        // fetch('roms.json')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         const romContainer = document.querySelector('div');
+        //         romContainer.innerHTML = '';
+
+        //         data.forEach(category => {
+        //             const categoryTitle = document.createElement('h2');
+        //             categoryTitle.textContent = category.name;
+        //             romContainer.appendChild(categoryTitle);
+
+        //             const romList = document.createElement('ul');
+        //             romList.classList.add('romList');
+
+        //             category.roms.forEach(rom => {
+        //                 const romItem = document.createElement('li');
+        //                 if (rom.subcategory) {
+        //                     romItem.classList.add('determiner');
+        //                     romItem.dataset.determiner = rom.subcategory;
+
+        //                     const subcategoryTitle = document.createElement('span');
+        //                     subcategoryTitle.textContent = rom.subcategory;
+        //                     romItem.appendChild(subcategoryTitle);
+
+        //                     const subcategoryList = document.createElement('ul');
+        //                     rom.games.forEach(game => {
+        //                         const gameItem = document.createElement('li');
+        //                         const gameLink = document.createElement('a');
+        //                         gameLink.href = game.url;
+        //                         gameLink.textContent = game.name;
+        //                         gameItem.appendChild(gameLink);
+        //                         subcategoryList.appendChild(gameItem);
+        //                     });
+        //                     romItem.appendChild(subcategoryList);
+        //                 } else {
+        //                     const gameLink = document.createElement('a');
+        //                     gameLink.href = rom.url;
+        //                     gameLink.textContent = rom.name;
+        //                     romItem.appendChild(gameLink);
+        //                 }
+        //                 romList.appendChild(romItem);
+        //             });
+
+        //             romContainer.appendChild(romList);
+        //         });
+        //     })
+        //     .catch(error => console.error('Error fetching ROMs:', error));
+    </script>
+    <script src="script.js">
+
+    </script>
+
+</body>
+
+</html>

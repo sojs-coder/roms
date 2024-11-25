@@ -1,18 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- external (gtag) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DJDL65P9Y4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-DJDL65P9Y4');
+    </script>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCPorted ROMs Library</title>
+    <title>ROM Library | CC Ported</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1502.0/aws-sdk.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            padding: 20px 0;
+            background-color: #fff;
+            margin: 0;
+            font-size: 48px;
+        }
+        h1, h2 {
+            color: #444;
+        }
+        #searchInput {
+            width: 300px;
+            min-width: 10vw;
+            height: 30px;
+            border-radius: 2px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        #searchInput:focus {
+            outline: none;
+            border: 1px solid dodgerblue;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            border-bottom: 1px solid #ccc;
+        }
+        li div.name {
+            max-width: 50%;
+            word-wrap: break-word;
+        }
+        li div.links {
+            padding: 5px;
+        }
+        li div.links a {
+            text-decoration: underline;
+            color: dodgerblue;
+            margin: 0 5px;
+        }
+        a {
+            text-decoration: none;
+            color: dodgerblue;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        a:visited {
+            color: dodgerblue;
+        }
+        .hidden {
+            display: none;
+        }
+        .determiner > ul {
+            margin-left: 30px;
+        }
+        div.container {
+            width: 500px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
+    <h1>Rom Library</h1>
+    <p><a href="https://ccported.github.io">&larr; Back to CCPorted</a></p>
+    <input type="text" id="searchInput" placeholder="Search for ROMs...">
     <div class="container">
-        <h1>CCPorted ROMs Library</h1>
-        <div id="content">
-            <div class="loading">Loading ROMs...</div>
-        </div>
+        <div class="loading">Loading ROMs...</div>
     </div>
 
     <script>
@@ -62,9 +163,10 @@
                 }
 
                 displayRoms(roms);
+                setupSearch();
             } catch (error) {
                 console.error('Error loading ROMs:', error);
-                document.getElementById('content').innerHTML = `
+                document.querySelector('.container').innerHTML = `
                     <div class="error">
                         Error loading ROMs. Please try again later.
                         <br>
@@ -76,15 +178,19 @@
 
         // Function to display ROMs
         function displayRoms(roms) {
-            const content = document.getElementById('content');
-            content.innerHTML = Object.entries(roms)
+            const container = document.querySelector('.container');
+            container.innerHTML = Object.entries(roms)
                 .map(([console, romList]) => `
-                    <div class="console-section">
-                        <h2 class="console-title">${console.toUpperCase()}</h2>
-                        <ul class="rom-list">
+                    <div class="determiner">
+                        <h2 id="${console}">${console.toUpperCase()} ROMs</h2>
+                        <ul>
                             ${romList.map(([filename, title]) => `
-                                <li class="rom-item">
-                                    ${title}
+                                <li>
+                                    <div class="name">${title}</div>
+                                    <div class="links">
+                                        <a href="https://ccportedroms.s3-us-west-2.amazonaws.com/${console}/${filename}" target="_blank">Download</a>
+                                        <!-- <a href="/emulator/?core=${console}&rom=${filename}" target="_blank" >Play</a> --> 
+                                    </div>
                                 </li>
                             `).join('')}
                         </ul>
@@ -92,11 +198,36 @@
                 `).join('');
         }
 
+        // Setup search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const romItems = document.querySelectorAll('li');
+            
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                romItems.forEach(item => {
+                    const romName = item.querySelector('.name').textContent.toLowerCase();
+                    if (romName.includes(searchTerm)) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+
+                // Show/hide category titles based on visible ROMs
+                document.querySelectorAll('.determiner').forEach(section => {
+                    const visibleRoms = section.querySelectorAll('li:not(.hidden)').length;
+                    section.style.display = visibleRoms > 0 ? '' : 'none';
+                });
+            });
+        }
+
         // Initialize AWS credentials and load ROMs
         AWS.config.credentials.get(function(err) {
             if (err) {
                 console.error('Error getting AWS credentials:', err);
-                document.getElementById('content').innerHTML = `
+                document.querySelector('.container').innerHTML = `
                     <div class="error">
                         Error initializing AWS credentials.
                         <br>
